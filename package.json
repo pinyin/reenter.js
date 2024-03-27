@@ -1,0 +1,56 @@
+{
+  "name": "reenter.js",
+  "version": "0.0.1",
+  "description": "Stateful-function oriented programming in JavaScript.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "jest",
+    "prepublish": "tsup"
+  },
+  "author": "Bao Bo <bob432091@gmail.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pinyin/reenter.js.git"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "@tsconfig/strictest": "^2.0.3",
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "prettier": "3.2.5",
+    "ts-jest": "^29.1.2",
+    "tsup": "^8.0.2"
+  },
+  "volta": {
+    "node": "20.11.1"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/src/**/*.ts"
+    ]
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "format": [
+      "cjs",
+      "esm"
+    ],
+    "dts": true,
+    "splitting": false,
+    "sourcemap": true,
+    "clean": true
+  }
+}
