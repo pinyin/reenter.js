@@ -1,8 +1,8 @@
-import { variable } from "./variable";
 import { At, Context, into } from "../core/core";
+import { variable } from "./variable";
 
-function forkable<K>(context: At): Forkable<K> {
-  const contexts = variable(context, () => new Map<K, Context>()).value;
+function forkable<K>(at: At): Forkable<K> {
+  const contexts = variable(at, () => new Map<K, Context>()).value;
   return {
     contexts,
     fork(key: K) {

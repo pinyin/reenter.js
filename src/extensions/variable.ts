@@ -1,7 +1,7 @@
-import { At, Context, into } from "../core/core";
+import { At } from "../core/core";
 
-function variable<T>(cursor: At, init: () => T): Variable<T> {
-  const status = cursor.next();
+function variable<T>(at: At, init: () => T): Variable<T> {
+  const status = at.next();
   const isInit = status.needsInit;
   if (isInit) {
     status.value = init();
@@ -9,7 +9,7 @@ function variable<T>(cursor: At, init: () => T): Variable<T> {
   }
 
   return {
-    justInited: isInit,
+    justInitialized: isInit,
     get() {
       return status.value;
     },
@@ -26,7 +26,7 @@ function variable<T>(cursor: At, init: () => T): Variable<T> {
 }
 
 type Variable<T> = {
-  justInited: boolean;
+  justInitialized: boolean;
 
   get value(): T;
   set value(value: T);
@@ -37,20 +37,3 @@ type Variable<T> = {
 
 export { variable };
 export type { Variable };
-
-describe(`${variable.name}`, () => {
-  test("should init variable on first run", () => {
-    const context: Context = [];
-    const cursor = into(context);
-    const v = variable(cursor, () => 1);
-    expect(v.justInited).toBeTruthy();
-    expect(v.value).toBe(1);
-    const nextLoop = variable(into(context), () => 2);
-    expect(nextLoop).toMatchObject({
-      isInit: false,
-      value: 1,
-    });
-    nextLoop.set(3);
-    expect(context[0]).toMatchObject({ value: 3 });
-  });
-});

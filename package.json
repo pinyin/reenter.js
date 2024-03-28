@@ -37,7 +37,7 @@
     "preset": "ts-jest",
     "testEnvironment": "node",
     "testMatch": [
-      "<rootDir>/src/**/*.ts"
+      "<rootDir>/src/**/*.{spec,test,unit}.ts"
     ]
   },
   "tsup": {

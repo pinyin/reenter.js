@@ -72,7 +72,7 @@ describe(`${into}`, () => {
       cursor.next(),
       cursor.next(),
       cursor.next(),
-    ]).toEqual(cursor);
+    ]).toEqual(context);
     expect(context.length).toBe(4);
   });
 });

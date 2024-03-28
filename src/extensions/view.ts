@@ -1,31 +1,28 @@
-import { variable } from "./variable";
-import { cache } from "./cache";
 import { At, Context, into } from "../core/core";
+import { cache } from "./cache";
+import { variable } from "./variable";
 
-function view<KS, TS>(
-  cursor: At,
-  timeline: Timeline<KS, TS>,
-): NextFrame<KS, TS> {
-  const context = variable<Context>(cursor, () => []).value;
+function view<KS, TS>(at: At, timeline: Timeline<KS, TS>): NextFrame<KS, TS> {
+  const keyframeContext = variable<Context>(at, () => []).value;
   return (duration: number) => {
-    const at = into(context);
-    const needsKeyFrame = variable(at, () => true);
+    const keyframeAt = into(keyframeContext);
+    const needsKeyFrame = variable(keyframeAt, () => true);
     const keyFrame = cache(
-      at,
-      (context) => timeline(context),
+      keyframeAt,
+      (at) => timeline(at),
       needsKeyFrame.value,
     );
-    const tweenFrame = keyFrame.tween(at, duration);
+    const tweenFrame = keyFrame.tween(keyframeAt, duration);
     needsKeyFrame.value = tweenFrame.needsKeyframe;
     return [keyFrame, tweenFrame];
   };
 }
 
-type Timeline<KS, TS> = (context: At) => KeyFrame<KS, TS>;
+type Timeline<KS, TS> = (at: At) => KeyFrame<KS, TS>;
 
 type KeyFrame<KS, TS> = { status: KS; tween: Tween<TS> };
 
-type Tween<S> = (context: At, duration: number) => TweenFrame<S>;
+type Tween<S> = (at: At, duration: number) => TweenFrame<S>;
 
 type TweenFrame<S> = {
   status: S;

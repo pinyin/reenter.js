@@ -1,8 +1,8 @@
-import { variable } from "./variable";
 import { At, Context, into } from "../core/core";
+import { variable } from "./variable";
 
-function fork(cursor: At): At {
-  const context = variable<Context>(cursor, () => []).value;
+function fork(at: At): At {
+  const context = variable<Context>(at, () => []).value;
   return into(context);
 }
 

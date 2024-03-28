@@ -1,15 +1,15 @@
-import { ResultAndEffect, reuseByKey } from "./reuseByKey";
 import { At } from "../core/core";
+import { ResultAndEffect, reuseByKey } from "./reuseByKey";
 
 function reuseByFunc(at: At): ReuseByFunc {
   return reuseByKey<any, any, any>(
     at,
     <P extends any[], R>(
-      context: At,
-      func: (context: At, ...p: P) => ResultAndEffect<R>,
+      at: At,
+      func: (at: At, ...p: P) => ResultAndEffect<R>,
       ...p: P
     ): ResultAndEffect<R> => {
-      return func(context, ...p);
+      return func(at, ...p);
     },
     (f: Function, ..._: any[]) => f,
   );

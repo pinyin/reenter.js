@@ -1,10 +1,10 @@
-import { variable } from "./variable";
 import { At } from "../core/core";
+import { variable } from "./variable";
 
-function prevOrCurr<T>(cursor: At, value: T): PrevOrCurr<T> {
-  const saved = variable(cursor, () => value);
+function prevOrCurr<T>(at: At, value: T): PrevOrCurr<T> {
+  const saved = variable(at, () => value);
   const prevOrCurr = saved.get();
-  const hasPrev = !saved.justInited;
+  const hasPrev = !saved.justInitialized;
   saved.set(value);
   return {
     hasPrev: hasPrev,

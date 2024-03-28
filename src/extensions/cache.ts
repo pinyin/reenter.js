@@ -1,14 +1,15 @@
-import { variable } from "./variable";
-import { fork } from "./fork";
 import { At } from "../core/core";
+import { fork } from "./fork";
+import { variable } from "./variable";
 
-function cache<T>(cursor: At, compute: (at: At) => T, until: boolean): T {
-  const initContext = fork(cursor);
-  const value = variable(cursor, () => compute(initContext));
-  if (!until || value.justInited) {
-    return value.value;
+function cache<T>(at: At, compute: (at: At) => T, until: boolean): T {
+  const computeAt = fork(at);
+  const saved = variable(at, () => compute(computeAt));
+  if (!until || saved.justInitialized) {
+    return saved.value;
   }
-  return (value.value = compute(initContext));
+  saved.value = compute(computeAt);
+  return saved.value;
 }
 
 export { cache };
