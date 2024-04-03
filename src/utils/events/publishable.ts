@@ -1,4 +1,4 @@
-export function events<T>(now: () => number): [Publish<T>, Stream<T>] {
+export function publishable<T>(now: () => number): [Publish<T>, Stream<T>] {
   let unreadEvents: Streamed<T>[] = [];
 
   function publish(value: T): Streamed<T> {

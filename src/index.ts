@@ -7,7 +7,7 @@ import * as re from "./extensions/reuseByFunc";
 import * as r from "./extensions/reuseByKey";
 import * as v from "./extensions/variable";
 import * as vi from "./extensions/view";
-import * as s from "./utils/events";
+import * as s from "./utils/events/publishable";
 
 export namespace reenter {
   export const into = core.into;
@@ -33,9 +33,11 @@ export namespace reenter {
 
   export const view = vi.view;
 
-  export const events = s.events;
-  export type Operation<T, R> = s.Operation<T, R>;
-  export type Publish<T> = s.Publish<T>;
-  export type Stream<T> = s.Stream<T>;
-  export type Streamed<T> = s.Streamed<T>;
+  export namespace events {
+    export const publishable = s.publishable;
+    export type Operation<T, R> = s.Operation<T, R>;
+    export type Publish<T> = s.Publish<T>;
+    export type Stream<T> = s.Stream<T>;
+    export type Streamed<T> = s.Streamed<T>;
+  }
 }

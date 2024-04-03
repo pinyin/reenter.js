@@ -1,8 +1,8 @@
-import { events, Streamed } from "./events";
+import { publishable, Streamed } from "./publishable";
 
-describe(`${events.name}`, () => {
+describe(`${publishable.name}`, () => {
   test("should accept publish event", (_) => {
-    const [publish, stream] = events<number>(() => Date.now());
+    const [publish, stream] = publishable<number>(() => Date.now());
 
     const published: Streamed<number>[] = [];
     published.push(publish(1));
@@ -11,7 +11,7 @@ describe(`${events.name}`, () => {
   });
 
   test(`should clear published events after called pull`, (_) => {
-    const [publish, stream] = events<number>(() => Date.now());
+    const [publish, stream] = publishable<number>(() => Date.now());
 
     const published: Streamed<number>[] = [];
     published.push(publish(1));
