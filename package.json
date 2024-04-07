@@ -27,6 +27,7 @@
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
     "prettier": "3.2.5",
+    "rxjs": "^8.0.0-alpha.14",
     "ts-jest": "^29.1.2",
     "tsup": "^8.0.2"
   },
@@ -37,7 +38,7 @@
     "preset": "ts-jest",
     "testEnvironment": "node",
     "testMatch": [
-      "<rootDir>/src/**/*.{spec,test,unit,unit_test,behavior}.ts"
+      "<rootDir>/src/**/*.{spec,test,unit,unit_test,behavior}*.ts"
     ]
   },
   "tsup": {
