@@ -1,12 +1,12 @@
-import { At } from "../core/core";
+import { Cursor } from "../core/core";
 import { ResultAndEffect, reuseByKey } from "./reuseByKey";
 
-function reuseByFunc(at: At): ReuseByFunc {
+function reuseGroup(at: Cursor): ReuseGroup {
   return reuseByKey<any, any, any>(
     at,
     <P extends any[], R>(
-      at: At,
-      func: (at: At, ...p: P) => ResultAndEffect<R>,
+      at: Cursor,
+      func: (at: Cursor, ...p: P) => ResultAndEffect<R>,
       ...p: P
     ): ResultAndEffect<R> => {
       return func(at, ...p);
@@ -15,9 +15,9 @@ function reuseByFunc(at: At): ReuseByFunc {
   );
 }
 
-type ReuseByFunc = {
+type ReuseGroup = {
   call<P extends any[], R>(
-    func: (at: At, ...p: P) => ResultAndEffect<R>,
+    func: (at: Cursor, ...p: P) => ResultAndEffect<R>,
     ...p: P[]
   ): R;
   diff(): {
@@ -26,5 +26,5 @@ type ReuseByFunc = {
   };
 };
 
-export { reuseByFunc };
-export type { ReuseByFunc };
+export { reuseGroup };
+export type { ReuseGroup };

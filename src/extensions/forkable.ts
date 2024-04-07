@@ -1,7 +1,7 @@
-import { At, Context, into } from "../core/core";
+import { Context, Cursor, into } from "../core/core";
 import { variable } from "./variable";
 
-function forkable<K>(at: At): Forkable<K> {
+function forkable<K>(at: Cursor): Forkable<K> {
   const contexts = variable(at, () => new Map<K, Context>()).value;
   return {
     contexts,
@@ -14,7 +14,7 @@ function forkable<K>(at: At): Forkable<K> {
 
 type Forkable<K> = {
   contexts: Map<K, Context>;
-  fork(key: K): At;
+  fork(key: K): Cursor;
 };
 
 export { forkable };

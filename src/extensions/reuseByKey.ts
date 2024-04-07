@@ -1,10 +1,10 @@
-import { At } from "../core/core";
+import { Cursor } from "../core/core";
 import { forkable } from "./forkable";
 import { variable } from "./variable";
 
 function reuseByKey<P extends any[], R, K>(
-  at: At,
-  impureFunc: (at: At, ...p: P) => ResultAndEffect<R>,
+  at: Cursor,
+  func: (at: Cursor, ...p: P) => ResultAndEffect<R>,
   computeKey: (...p: P) => K,
 ): ReuseByKey<P, R, K> {
   const contexts = forkable<K>(at);
@@ -19,7 +19,7 @@ function reuseByKey<P extends any[], R, K>(
   return {
     call(...p): R {
       const key = computeKey(...p);
-      pending.set(key, impureFunc(contexts.fork(key), ...p));
+      pending.set(key, func(contexts.fork(key), ...p));
       leaving.delete(key);
       return pending.get(key)!.result;
     },

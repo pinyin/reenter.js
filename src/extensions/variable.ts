@@ -1,6 +1,6 @@
-import { At } from "../core/core";
+import { Cursor } from "../core/core";
 
-function variable<T>(at: At, init: () => T): Variable<T> {
+function variable<T>(at: Cursor, init: () => T): Variable<T> {
   const status = at.next();
   const isInit = status.needsInit;
   if (isInit) {

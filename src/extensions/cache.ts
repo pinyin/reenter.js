@@ -1,8 +1,8 @@
-import { At } from "../core/core";
+import { Cursor } from "../core/core";
 import { fork } from "./fork";
 import { variable } from "./variable";
 
-function cache<T>(at: At, compute: (at: At) => T, until: boolean): T {
+function cache<T>(at: Cursor, compute: (at: Cursor) => T, until: boolean): T {
   const computeAt = fork(at);
   const saved = variable(at, () => compute(computeAt));
   if (!until || saved.justInitialized) {
