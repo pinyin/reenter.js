@@ -6,7 +6,7 @@ import * as p from "./extensions/prevOrCurr";
 import * as r from "./extensions/reuseByKey";
 import * as re from "./extensions/reuseGroup";
 import * as v from "./extensions/variable";
-import * as vi from "./extensions/view";
+import * as va from "./extensions/variate";
 
 export namespace reenter {
   export const into = core.into;
@@ -33,5 +33,8 @@ export namespace reenter {
   export const variable = v.variable;
   export type Variable<T> = v.Variable<T>;
 
-  export const view = vi.view;
+  export const variate = va.variate;
+  export type Variate<T> = va.Variate<T>;
+  export type Timestamp = va.Timestamp;
+  export type Sample<T> = va.Sample<T>;
 }
