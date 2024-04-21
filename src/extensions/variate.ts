@@ -30,7 +30,7 @@ export function variate<T>(
         return convergeAfter.value;
       },
       didConverge(): boolean {
-        return !Number.isFinite(convergeAfter.value);
+        return Number.isFinite(convergeAfter.value);
       },
     },
   ];

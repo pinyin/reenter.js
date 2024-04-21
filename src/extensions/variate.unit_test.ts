@@ -44,6 +44,7 @@ describe(`${variate.name} should`, () => {
     let [w, r] = run(2);
     w.set(3);
     expect(r.get()).toEqual([{ value: 3, at: 2 }]);
+    expect(r.didConverge()).toEqual(false);
     [w, r] = run(4);
     w.converge();
     w.set(3);
@@ -52,6 +53,7 @@ describe(`${variate.name} should`, () => {
       { value: 3, at: 4 },
     ]);
     expect(r.convergeAt()).toEqual(4);
+    expect(r.didConverge()).toEqual(true);
     [w, r] = run(5);
     w.set(4);
     expect(r.get()).toEqual([
