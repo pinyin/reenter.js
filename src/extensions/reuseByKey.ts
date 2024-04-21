@@ -25,7 +25,7 @@ function reuseByKey<P extends any[], R, K>(
     },
     diff() {
       leaving.forEach((value, key) => {
-        if (value.stopEffect?.() ?? true) {
+        if (value.cleanup?.() ?? true) {
           leaving.delete(key);
           contexts.contexts.delete(key);
         }
@@ -40,7 +40,7 @@ function reuseByKey<P extends any[], R, K>(
 }
 
 type ResultAndEffect<R> = {
-  stopEffect?(): boolean;
+  cleanup?(): boolean;
   result: R;
 };
 

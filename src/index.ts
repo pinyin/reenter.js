@@ -34,7 +34,7 @@ export namespace reenter {
   export type Variable<T> = v.Variable<T>;
 
   export const variate = va.variate;
-  export type Variate<T> = va.Variate<T>;
+  export type Variate<T> = va.UpdateVariate<T>;
   export type Timestamp = va.Timestamp;
   export type Sample<T> = va.Sample<T>;
 }
