@@ -1,7 +1,7 @@
 {
   "name": "reenter.js",
-  "version": "0.0.1",
-  "description": "Stateful-function oriented programming in JavaScript.",
+  "version": "0.1.0",
+  "description": "A DSL for managing side effects",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
