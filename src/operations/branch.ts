@@ -12,8 +12,8 @@ export function branch(n: number): UsedInContext<Branches> {
     while (storages().length < n) storages().push([null]);
 
     return (index: number) => {
-      const [branch, archive] = reenter(storages()[index]!);
-      context.register(archive);
+      const [branch, archiveBranch] = reenter(storages()[index]!);
+      context.onArchive(archiveBranch);
       return branch;
     };
   };

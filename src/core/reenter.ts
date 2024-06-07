@@ -8,8 +8,13 @@ export function reenter(storage: ContextStorage): [Context, ArchiveContext] {
     effects: new Set(),
     archive: (): DidFinish => {
       let didFinish = true;
-      status.effects.forEach((effect) => (didFinish = effect() && didFinish));
-      if (didFinish) status.effects.clear();
+      status.effects.forEach((effect) => {
+        const didFinishCurrent = effect();
+        if (didFinishCurrent) {
+          status.effects.delete(effect);
+        }
+        didFinish = didFinishCurrent && didFinish;
+      });
       return didFinish;
     },
   });
@@ -28,10 +33,10 @@ export function reenter(storage: ContextStorage): [Context, ArchiveContext] {
         (value: T) => (storage[currentIndex] = value),
       ];
     },
-    register(cleanup: () => DidFinish): CancelRegistration {
-      status.effects.add(cleanup);
+    onArchive(snapshot: ArchiveContext): MarkConsistent {
+      status.effects.add(snapshot);
       return () => {
-        status.effects.delete(cleanup);
+        status.effects.delete(snapshot);
       };
     },
     use<T>(func: (context: Context) => T): T {
@@ -44,9 +49,9 @@ export function reenter(storage: ContextStorage): [Context, ArchiveContext] {
 
 export type Context = {
   property<T>(): Property<T>;
-  register(cleanup: () => DidFinish): CancelRegistration;
+  onArchive(archive: ArchiveContext): MarkConsistent;
 
-  use<T>(target: UsedInContext<T>): T;
+  use<T>(by: UsedInContext<T>): T;
 };
 
 export type UsedInContext<T> = (context: Context) => T;
@@ -64,4 +69,4 @@ type ContextStatus = {
   archive: ArchiveContext;
 };
 
-export type CancelRegistration = () => void;
+export type MarkConsistent = () => void;

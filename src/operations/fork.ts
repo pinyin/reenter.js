@@ -6,11 +6,9 @@ import {
 } from "../core/reenter";
 import { variable } from "./variable";
 
-export function fork(): UsedInContext<Context> {
-  return (context) => {
-    const [storage] = context.use(variable(() => [null] as ContextStorage));
-    const [forked, archiveForked] = reenter(storage());
-    context.register(archiveForked);
-    return forked;
-  };
-}
+export const fork: UsedInContext<Context> = (context) => {
+  const [storage] = context.use(variable(() => [null] as ContextStorage));
+  const [forked, archiveForked] = reenter(storage());
+  context.onArchive(archiveForked);
+  return forked;
+};
