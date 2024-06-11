@@ -1,4 +1,4 @@
-export function reenter(storage: ContextStorage): [Context, ArchiveContext] {
+export function reenter(storage: ContextStorage): [Context, RunEffect] {
   let index = 1;
 
   if (storage.length == 0) {
@@ -6,16 +6,24 @@ export function reenter(storage: ContextStorage): [Context, ArchiveContext] {
   }
   const status: ContextStatus = (storage[0] ??= {
     effects: new Set(),
-    archive: (): DidFinish => {
-      let didFinish = true;
-      status.effects.forEach((effect) => {
-        const didFinishCurrent = effect();
-        if (didFinishCurrent) {
-          status.effects.delete(effect);
+    runEffects: (): CancelEffect => {
+      status.effects.forEach((_, run) => {
+        const cleanup = run();
+        if (cleanup ! instanceof Function) {
+          status.effects.delete(run);
         }
-        didFinish = didFinishCurrent && didFinish;
       });
-      return didFinish;
+      return () => {
+        let didFinish = true;
+        status.effects.forEach((cancel, run) => {
+          const didFinishCurrent = cancel?.() ?? true
+          if (didFinishCurrent) {
+            status.effects.delete(run);
+          }
+          didFinish = didFinish && didFinishCurrent;
+        })
+        return didFinish;
+      };
     },
   });
 
@@ -33,10 +41,11 @@ export function reenter(storage: ContextStorage): [Context, ArchiveContext] {
         (value: T) => (storage[currentIndex] = value),
       ];
     },
-    onArchive(snapshot: ArchiveContext): MarkConsistent {
+    effect(snapshot: RunEffect): CancelEffect {
       status.effects.add(snapshot);
       return () => {
         status.effects.delete(snapshot);
+        return true;
       };
     },
     use<T>(func: (context: Context) => T): T {
@@ -44,19 +53,21 @@ export function reenter(storage: ContextStorage): [Context, ArchiveContext] {
     },
   };
 
-  return [context, status.archive];
+  return [context, status.runEffects];
 }
 
 export type Context = {
   property<T>(): Property<T>;
-  onArchive(archive: ArchiveContext): MarkConsistent;
+  effect(effect: RunEffect): CancelEffect;
 
   use<T>(by: UsedInContext<T>): T;
 };
 
 export type UsedInContext<T> = (context: Context) => T;
 
-export type ArchiveContext = () => DidFinish;
+export type RunEffect = () => CancelEffect | void;
+
+export type CancelEffect = () => DidFinish
 
 export type Property<T> = [() => T | null, (value: T) => typeof value];
 
@@ -65,8 +76,7 @@ export type ContextStorage = [ContextStatus | null, ...any[]];
 export type DidFinish = boolean;
 
 type ContextStatus = {
-  effects: Set<() => DidFinish>;
-  archive: ArchiveContext;
+  effects: Map<RunEffect, CancelEffect | void>
+  runEffects: RunEffect;
 };
 
-export type MarkConsistent = () => void;

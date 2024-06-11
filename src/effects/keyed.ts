@@ -1,5 +1,5 @@
-import { ContextStorage, reenter, UsedInContext } from "../core/reenter";
-import { constant } from "../operations/constant";
+import {ContextStorage, reenter, UsedInContext} from "../core/reenter";
+import {constant} from "../operations/constant";
 
 export function keyed<P extends any[], R, K>(
   func: UsedInContext<(...p: P) => R>,
@@ -15,7 +15,7 @@ export function keyed<P extends any[], R, K>(
       if (!storages.has(key)) storages.set(key, [null] as ContextStorage);
       const [subcontext, archiveSubcontext] = reenter(storages.get(key)!);
       archiveSubcontext();
-      context.onArchive(archiveSubcontext);
+      context.effect(archiveSubcontext);
       return func(subcontext)(...p);
     };
   };
