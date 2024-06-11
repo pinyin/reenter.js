@@ -5,13 +5,13 @@ export function reenter(storage: ContextStorage): [Context, Archive] {
     storage.push(null);
   }
   const status: ContextStatus = (storage[0] ??= {
-    onArchive: new Set(),
+    onArchiveSet: new Set(),
     archive: (): DidFinish => {
       let didFinish = true;
-      status.onArchive.forEach((effect) => {
+      status.onArchiveSet.forEach((effect) => {
         const didFinishCurrent = effect();
         if (didFinishCurrent) {
-          status.onArchive.delete(effect);
+          status.onArchiveSet.delete(effect);
         }
         didFinish = didFinishCurrent && didFinish;
       });
@@ -34,9 +34,9 @@ export function reenter(storage: ContextStorage): [Context, Archive] {
       ];
     },
     onArchive(archive: Archive): CancelOnArchive {
-      status.onArchive.add(archive);
+      status.onArchiveSet.add(archive);
       return () => {
-        status.onArchive.delete(archive);
+        status.onArchiveSet.delete(archive);
       };
     },
     use<T>(func: (context: Context) => T): T {
@@ -65,7 +65,7 @@ export type ContextStorage = [ContextStatus | null, ...any[]];
 export type DidFinish = boolean;
 
 type ContextStatus = {
-  onArchive: Set<Archive>;
+  onArchiveSet: Set<Archive>;
   archive: Archive;
 };
 
