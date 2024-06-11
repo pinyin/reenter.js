@@ -1,17 +1,17 @@
-export function reenter(storage: ContextStorage): [Context, ArchiveContext] {
+export function reenter(storage: ContextStorage): [Context, Archive] {
   let index = 1;
 
   if (storage.length == 0) {
     storage.push(null);
   }
   const status: ContextStatus = (storage[0] ??= {
-    effects: new Set(),
+    onArchive: new Set(),
     archive: (): DidFinish => {
       let didFinish = true;
-      status.effects.forEach((effect) => {
+      status.onArchive.forEach((effect) => {
         const didFinishCurrent = effect();
         if (didFinishCurrent) {
-          status.effects.delete(effect);
+          status.onArchive.delete(effect);
         }
         didFinish = didFinishCurrent && didFinish;
       });
@@ -33,10 +33,10 @@ export function reenter(storage: ContextStorage): [Context, ArchiveContext] {
         (value: T) => (storage[currentIndex] = value),
       ];
     },
-    onArchive(snapshot: ArchiveContext): MarkConsistent {
-      status.effects.add(snapshot);
+    onArchive(archive: Archive): CancelOnArchive {
+      status.onArchive.add(archive);
       return () => {
-        status.effects.delete(snapshot);
+        status.onArchive.delete(archive);
       };
     },
     use<T>(func: (context: Context) => T): T {
@@ -49,14 +49,14 @@ export function reenter(storage: ContextStorage): [Context, ArchiveContext] {
 
 export type Context = {
   property<T>(): Property<T>;
-  onArchive(archive: ArchiveContext): MarkConsistent;
+  onArchive(archive: Archive): CancelOnArchive;
 
   use<T>(by: UsedInContext<T>): T;
 };
 
 export type UsedInContext<T> = (context: Context) => T;
 
-export type ArchiveContext = () => DidFinish;
+export type Archive = () => DidFinish;
 
 export type Property<T> = [() => T | null, (value: T) => typeof value];
 
@@ -65,8 +65,8 @@ export type ContextStorage = [ContextStatus | null, ...any[]];
 export type DidFinish = boolean;
 
 type ContextStatus = {
-  effects: Set<() => DidFinish>;
-  archive: ArchiveContext;
+  onArchive: Set<Archive>;
+  archive: Archive;
 };
 
-export type MarkConsistent = () => void;
+export type CancelOnArchive = () => void;
